@@ -3,7 +3,7 @@
 
 class Register():
 
-    def __init__(self, read_register1=None, read_register2=None, write_register=None, write_data=None):
+    def __init__(self, read_register1=0, read_register2=0, write_register=0, write_data=0):
         '''
             Register must be integer!
         '''
@@ -40,8 +40,9 @@ class Register():
 
         if self.reg_write == 0b0:
             return self.__read_data()
-        else:
+        elif self.reg_write == 0b1:
             return self.__write_data()
+        return 0, 0
 
 
 
