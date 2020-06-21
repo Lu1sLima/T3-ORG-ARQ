@@ -1,5 +1,5 @@
 class Controle():
-
+    
     def __init__(self):
         self.estado_atual = 0
         self.dic_saida = {
@@ -21,7 +21,7 @@ class Controle():
 
 
     def saida(self):
-        print(self.estado_atual)
+        # print(self.estado_atual)
         return self.dic_saida[self.estado_atual]()
 
     def saida0(self):
@@ -38,13 +38,17 @@ class Controle():
             "FontePC":None, "ULAOp": 0b00, "ULAFonteB":0b11, "ULAFonteA":0b0, "EscReg":None, "RegDst":None
             }
 
-        if "lw" in self.comando or "sw" in self.comando:
-            self.estado_atual = 2 
-        elif "beq" in self.comando:
+        if "lw" in self.comando[0] or "sw" in self.comando[0]:
+            self.estado_atual = 2
+        elif "beq" in self.comando[0]:
             self.estado_atual = 8
-        else:
+        elif int(self.comando[1][0:6], 2) == 0:
             # Caso seja tipo r
             self.estado_atual = 6
+        else:
+            #caso seja tipo i
+            True == True
+
         return saida
 
     def saida2(self):
@@ -53,9 +57,9 @@ class Controle():
             "FontePC":None, "ULAOp": 0b00, "ULAFonteB":0b10, "ULAFonteA":0b1, "EscReg":None, "RegDst":None
         }
 
-        if "lw" in self.comando:
+        if "lw" in self.comando[0]:
             self.estado_atual = 3
-        elif "sw" in self.comando:
+        elif "sw" in self.comando[0]:
             self.estado_atual = 5
 
         return saida
@@ -123,17 +127,19 @@ class Controle():
         return saida
 
 
-a = Controle()
+### Testa
+# a = Controle()
 
-def p1():
-    return 2
+# def p1():
+#     return 2
 
-dict = {
-    1: p1
-}
+# dict = {
+#     1: p1
+# }
 
-print(a.saida())
-print(a.saida())
+# print(a.saida())
+# print(a.saida())
+###
 
 # dic_resp = {0:1, 1:1}
 
