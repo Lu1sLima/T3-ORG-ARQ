@@ -1,12 +1,11 @@
 ﻿class Memoria:
     # de 0 a 39 memoria codigo
     # de 40 a 49 memoria .data 
-    dados = []
 
     def __init__(self):
-        # Fill dados with '0'
-        for i in range(50):
-            self.dados = self.dados + [0]
+        # Fill dados with '0' 
+        self.dados = [0] * 50
+
 
     # reduzir 0x400000
     def calc_pos_programa(self, pos):
