@@ -40,6 +40,9 @@ class ULA():
             self.zero = 0b0
             return None #Ver esses retornos!
 
+    def __xor_operation(self):
+        return self.op_1 ^ self.op_2
+
     def operate(self):
         
         if self.alu_operation == 0b00:
@@ -47,9 +50,9 @@ class ULA():
         elif self.alu_operation == 0b01:
             return self.__subtract_operation(), self.zero
         elif self.alu_operation == 0b10:
-            if 'addu' or 'add' in self.instr:
+            if 'addu' in self.instr or 'add' in self.instr:
                 return self.__add_operation(), self.zero
-            elif 'sub' or 'subu' in self.instr:
+            elif 'sub' in self.instr or 'subu' in self.instr:
                 return self.__subtract_operation(), self.zero
             elif 'and' in self.instr:
                 return self.__and_operation(), self.zero
@@ -57,5 +60,18 @@ class ULA():
                 return self.__or_operation(), self.zero
             elif 'slt' in self.instr:
                 return self.__slt_operation(), self.zero
+            elif 'xor' in self.instr:
+                return self.__xor_operation(), self.zero
+        elif self.alu_operation == 0b11:
+            if 'addiu' in self.instr:
+                self.__add_operation(), self.zero
+            elif 'lw' in self.instr or 'sw' in self.instr:
+                self.__add_operation(), self.zero
+            elif 'lui' in self.instr:
+                self.__add_operation(), self.zero
+            elif 'ori' in self.instr:
+                self.__or_operation(), self.zero
+            elif 'andi' in self.instr:
+                self.__and_operation(), self.zero
             
         return None, self.zero #Ver aqui
