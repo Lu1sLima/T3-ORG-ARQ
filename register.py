@@ -33,7 +33,7 @@ class Register():
         if self.reg_write == 0b1:
             self.registers[self.write_register] = self.write_data
         
-        return None, None
+        return 0, 0
 
 
     def operate(self):

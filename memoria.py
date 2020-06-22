@@ -5,8 +5,20 @@
     def __init__(self):
         # Fill dados with '0' 
         self.dados = [0] * 50
+        self.endereco = 0
+        self.dado_escrever = 0
+        self.lerMem = 0
+        self.escMem = 0
 
 
+    def operate(self):
+        if self.lerMem == 1:
+            return self.dados[self.endereco]
+        elif self.escMem == 1:
+            self.dados[self.endereco] = self.dado_escrever
+            return self.dado_escrever
+        return 0
+        
     # reduzir 0x400000
     def calc_pos_programa(self, pos):
         pos_real = (int(str(pos), 16) - int("0x400000", 16)) / 4
