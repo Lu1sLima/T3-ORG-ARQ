@@ -1,8 +1,8 @@
 class ULA():
     def __init__(self):
         self.alu_operation: bin = 0b00 #pegar uma string binaria
-        self.op_1: hex = None
-        self.op_2: hex = None
+        self.op_1: hex = 0b0
+        self.op_2: hex = 0b0
         self.zero: bin = 0b0
         self.instr: str = ''
         #Talvez ter uma tributo de ula_saida?

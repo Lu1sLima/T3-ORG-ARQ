@@ -8,7 +8,7 @@ from controle import Controle
 from utils import extend_my_bits,shift_l_my_bits,store_in_memory
 from registrador_instrucao import RegistradorInstrucao
 from register import Register
-
+from pc import PC
 
 window=Tk()
 window.title("Scale,Tabs,Table Example")
@@ -48,11 +48,8 @@ r = [1] * 32
 #      46: 0, 47: 0, 48: 0, 49: 0}
 
 # Valores de sinais
-s = {"PCEscCond": None, "PCEsc":None,  "IouD":None,
-     "LerMemoria":None, "EscMem":None,"MemParaReg":None,
-     "IREsc":None, "FontePC":None, "ULAOp": None,
-     "ULAFonteB":None,  "ULAFonteA":None, "EscReg":None,
-     "RegDst":None}
+s = {"PCEscCond": None, "PCEsc":0b1,  "IouD":0b0, "LerMemoria":0b1, "EscMem":None,"MemParaReg":None, "IREsc":0b1, 
+            "FontePC":0b00, "ULAOp": 0b00, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":None, "RegDst":None}
 
 # Funçoes que alteram dados
 def altera_registradores(dic_reg):
@@ -73,18 +70,19 @@ def altera_sinais(dic_sinais):
 
 ula = ULA()
 controle = Controle()
-controle_fake = Controle()
-bloco_controle = controle_fake.saida()
-saida_contr = controle.saida()
+sinais = controle.dic_saida
+bloco_controle = s
 banco_registradores = Register()
 registrador_instrucao = RegistradorInstrucao()
 memoria = Memoria()
+pece = PC()
 store_in_memory('teste2.asm', memoria)
-
-def opera():
+def process():
+    pc = pece.pc
 
     bloco_controle = controle.saida()
-    pc = 0
+    print(f'PC {pc}')
+    print(f'Estado atual {controle.estado_atual}')
 
     mux_pc = {
         0:pc,
@@ -93,17 +91,22 @@ def opera():
 
     memoria.lerMem = bloco_controle['LerMemoria']
     memoria.escMem = bloco_controle['EscMem']
-    memoria.endereco = mux_pc[bloco_controle['IouD']]
+    if bloco_controle['IouD'] is None:
+        memoria.endereco = None
+    else:
+        memoria.endereco = mux_pc[bloco_controle['IouD']]
 
-    registrador_instrucao.instr = memoria.operate()
-    registrador_instrucao.operate() #IREsc??
+    if controle.estado_atual == 1:
+        registrador_instrucao.instr = str(memoria.operate())
+        registrador_instrucao.operate() #IREsc??
+    print('Instrucao: '+registrador_instrucao.instr)
 
     #Enviando a instrução para o bloco de controle
     controle.comando = (registrador_instrucao.instr, registrador_instrucao.binary_instr)
 
     mux_reg_esc = {
-        0:registrador_instrucao.binary_instr[6:11],
-        1:registrador_instrucao.binary_instr[11:16]
+        0:registrador_instrucao.binary_instr[11:16],
+        1:registrador_instrucao.binary_instr[16:21]
     }
 
     mux_reg_dado = {
@@ -111,24 +114,24 @@ def opera():
         1:'Nada por enquanto, falta fazer o registrador de dados da memoria'
     }
 
-    banco_registradores.read_register1 = int(registrador_instrucao.binary_instr[:6], 2)
-    banco_registradores.read_register2 = int(registrador_instrucao.binary_instr[6:11], 2)
+    banco_registradores.read_register1 = int(registrador_instrucao.binary_instr[6:11], 2)
+    banco_registradores.read_register2 = int(registrador_instrucao.binary_instr[11:16], 2)
     banco_registradores.write_register = int(mux_reg_esc[bloco_controle['RegDst']], 2)
     banco_registradores.write_data = mux_reg_dado[bloco_controle['MemParaReg']]
     banco_registradores.reg_write = bloco_controle['EscReg']
 
-    extended_bits = extended_bits(registrador_instrucao.binary_instr[16:]) #retorna um binario com 32 bits
+    extended_bits = extend_my_bits(registrador_instrucao.binary_instr[16:]) #retorna um binario com 32 bits
     shif_my_bits = f'{shift_l_my_bits(extended_bits):032b}'
 
     saida_reg_1, saida_reg_2 = banco_registradores.operate()
 
     mux_ula1 = {
         0:pc,
-        1:int(saida_reg_1, 16) #digamos que terá hexadecimais no banco de registradores
+        1:int(hex(saida_reg_1), 16) #digamos que terá hexadecimais no banco de registradores
     }
 
     mux_ula2 = {
-        0:int(saida_reg_2, 16),
+        0:int(hex(saida_reg_2), 16),
         1:1, #para pc++
         2:int(extended_bits, 2),
         3:int(shif_my_bits, 2)
@@ -139,13 +142,18 @@ def opera():
     ula.alu_operation = bloco_controle['ULAOp']
     ula.instr = registrador_instrucao.instr
 
+    # saida_ula, zero = ula.operate()
+
     mux_saida_ula = {
         0:ula.operate()[0],
         1:ula.operate()[0],#ver isso
         2:None
     }
+    
+    if bloco_controle['FontePC'] is not None:
+        pece.pc = mux_saida_ula[bloco_controle['FontePC']]
+    print(pc)
 
-    pc = mux_saida_ula['FontePC']
 
 
 
@@ -242,7 +250,8 @@ def atualiza_sinais():
             if sig >= len(aux):
                 break
             
-            output = bloco_controle[aux[sig]]
+            dictio = sinais[controle.estado_atual]()
+            output = dictio[aux[sig]]
             if output == None:
                 output = str(output)
             else:
@@ -258,7 +267,8 @@ def atualiza_sinais():
         
 atualiza_sinais()
 
-
+# btn1 = Button(window, text='Press', fg='white',   bg='black', font=('comicsans', 12), command=process(pc)).pack()
+# btn1.pack(side = BOTTOM)
 # Gerencia os botoes
 
 frame = Frame(window, width=600, height=400)
@@ -271,19 +281,19 @@ def keypress (event):
         # Lugar onde escreve comandos do processador
             # processador .process
             # processador .informaçoes
-        
+        process()
+        atualiza_sinais()
+        atualiza_data()
+        atualiza_memoria()
+        atualiza_reg()
+
         # Passar os dados corretos p/ as funçoes:
-        altera_re()
-        altera_data()
-        altera_memoria()
-        altera_sinais()
         
     # Descomente para saber qual tecla foi pressionada
     #keyPressed = event.keysym
     #print("Você pressionou:" + keyPressed)
 
-
-#frame.bind("<KeyRelease>", keyup)
+# frame.bind("<KeyRelease>", keyup)
 frame.bind("<KeyPress>", keypress)
 frame.pack()
 frame.focus_set()

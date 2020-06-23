@@ -14,7 +14,7 @@ class Controle():
             8: self.saida8,
             9: self.saida9
         }
-        self.comando = ""
+        self.comando = "", ""
         
     def insere_comando(self, comando):
         self.comando = comando
@@ -26,23 +26,23 @@ class Controle():
 
     def saida0(self):
         saida = {
-            "PCEscCond": None, "PCEsc":0b1,  "IouD":0b0, "LerMemoria":0b1, "EscMem":None,"MemParaReg":None, "IREsc":0b1, 
-            "FontePC":0b00, "ULAOp": 0b00, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":None, "RegDst":None
+            "PCEscCond": None, "PCEsc":0b1,  "IouD":0b0, "LerMemoria":0b1, "EscMem":None,"MemParaReg":0, "IREsc":0b1, 
+            "FontePC":0b00, "ULAOp": 0b00, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":None, "RegDst":0
         }
         self.estado_atual = 1
         return saida
 
     def saida1(self):
         saida = {
-            "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":None, "IREsc":None,
-            "FontePC":None, "ULAOp": 0b00, "ULAFonteB":0b11, "ULAFonteA":0b0, "EscReg":None, "RegDst":None
+            "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
+            "FontePC":None, "ULAOp": 0b00, "ULAFonteB":0b11, "ULAFonteA":0b0, "EscReg":None, "RegDst":0
             }
 
         if "lw" in self.comando[0] or "sw" in self.comando[0]:
             self.estado_atual = 2
         elif "beq" in self.comando[0]:
             self.estado_atual = 8
-        elif int(self.comando[1][0:6], 2) == 0:
+        elif len(self.comando[1]) >= 6 and int(self.comando[1][0:6], 2) == 0:
             # Caso seja tipo r
             self.estado_atual = 6
         else:
@@ -53,8 +53,8 @@ class Controle():
 
     def saida2(self):
         saida = {
-            "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":None, "IREsc":None,
-            "FontePC":None, "ULAOp": 0b00, "ULAFonteB":0b10, "ULAFonteA":0b1, "EscReg":None, "RegDst":None
+            "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
+            "FontePC":None, "ULAOp": 0b00, "ULAFonteB":0b10, "ULAFonteA":0b1, "EscReg":None, "RegDst":0
         }
 
         if "lw" in self.comando[0]:
@@ -67,8 +67,8 @@ class Controle():
     def saida3(self):
         # Acesso a memoria
         saida = {
-            "PCEscCond":None, "PCEsc":None, "IouD":0b0, "LerMemoria":0b1, "EscMem":None, "MemParaReg":None, "IREsc":None,
-            "FontePC":None, "ULAOp":None, "ULAFonteB":None, "ULAFonteA":None, "EscReg":None, "RegDst":None
+            "PCEscCond":None, "PCEsc":None, "IouD":0b0, "LerMemoria":0b1, "EscMem":None, "MemParaReg":0, "IREsc":None,
+            "FontePC":None, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":None, "RegDst":0
         }
         self.estado_atual = 4
         return saida
@@ -76,7 +76,7 @@ class Controle():
     def saida4(self):
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0b1, "IREsc":None, 
-            "FontePC":None, "ULAOp":None, "ULAFonteB":None, "ULAFonteA":None, "EscReg":0b1,"RegDst":0
+            "FontePC":None, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":0b1,"RegDst":0
         }
         self.estado_atual = 0
         return saida
@@ -84,8 +84,8 @@ class Controle():
     def saida5(self):
         #acesso a memoria
         saida = {
-            "PCEscCond":None, "PCEsc":None, "IouD":0b1, "LerMemoria":None, "EscMem":0b1, "MemParaReg":None, "IREsc":None,
-            "FontePC":None, "ULAOp":None, "ULAFonteB":None, "ULAFonteA":None, "EscReg":None, "RegDst":None
+            "PCEscCond":None, "PCEsc":None, "IouD":0b1, "LerMemoria":None, "EscMem":0b1, "MemParaReg":0, "IREsc":None,
+            "FontePC":None, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":None, "RegDst":0
         }
         self.estado_atual = 0
         return saida
@@ -93,8 +93,8 @@ class Controle():
     def saida6(self):
         #execução
         saida = {
-            "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":None, "IREsc":None,
-            "FontePC":None, "ULAOp":0b10, "ULAFonteB":0b00, "ULAFonteA":0b1, "EscReg":None, "RegDst":None
+            "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
+            "FontePC":None, "ULAOp":0b10, "ULAFonteB":0b00, "ULAFonteA":0b1, "EscReg":None, "RegDst":0
         }
         self.estado_atual = 7
         return saida
@@ -103,7 +103,7 @@ class Controle():
         #Termino da instrução tipo R (escrita em Rd)
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0b0, "IREsc": None,
-            "FontePC":None, "ULAOp":None, "ULAFonteB":None, "ULAFonteA":None, "EscReg":0b1, "RegDst":0b1
+            "FontePC":None, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":0b1, "RegDst":0b1
         }
         self.estado_atual = 0
         return saida
@@ -111,8 +111,8 @@ class Controle():
     def saida8(self):
         #Termino do desvio condicional
         saida = {
-            "PCEscCond":0b1, "PCEsc":0, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":None, "IREsc":None,
-            "FontePC":0b01, "ULAOp": 0b01, "ULAFonteB":0b00, "ULAFonteA":1, "EscReg":None, "RegDst":None
+            "PCEscCond":0b1, "PCEsc":0, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
+            "FontePC":0b01, "ULAOp": 0b01, "ULAFonteB":0b00, "ULAFonteA":1, "EscReg":None, "RegDst":0
         }
         self.estado_atual = 0
         return saida
@@ -120,16 +120,14 @@ class Controle():
     def saida9(self):
         self.estado_atual = 0
         saida = {
-            "PCEscCond":None, "PCEsc":0b1, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":None, "IREsc":None,
-            "FontePC":0b01, "ULAOp":None, "ULAFonteB":None, "ULAFonteA":None, "EscReg":None, "RegDst":None
+            "PCEscCond":None, "PCEsc":0b1, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
+            "FontePC":0b01, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":None, "RegDst":0
         }
         self.estado_atual = 0
         return saida
 
 
 ### Testa
-# a = Controle()
-
 # def p1():
 #     return 2
 

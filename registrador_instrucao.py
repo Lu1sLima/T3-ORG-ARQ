@@ -8,7 +8,8 @@ class RegistradorInstrucao():
 
 
     def operate(self):
-        self.decodify_bin()
+        if "$" in str(self.instr):
+            self.decodify_bin()
         
     def decodify_bin(self):
         instruction = re.split('\W+', self.instr)
