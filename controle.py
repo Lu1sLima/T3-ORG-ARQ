@@ -27,7 +27,7 @@ class Controle():
     def saida0(self):
         saida = {
             "PCEscCond": None, "PCEsc":0b1,  "IouD":0b0, "LerMemoria":0b1, "EscMem":None,"MemParaReg":0, "IREsc":0b1, 
-            "FontePC":0b00, "ULAOp": 0b00, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":None, "RegDst":0
+            "FontePC":0b00, "ULAOp": 0b000, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":None, "RegDst":0
         }
         self.estado_atual = 1
         return saida
@@ -46,21 +46,32 @@ class Controle():
             # Caso seja tipo r
             self.estado_atual = 6
         else:
-            #caso seja tipo i
-            True == True
+            #caso seja tipo i vai para o mesmo do sw/lw
+            self.estado_atual = 2
 
         return saida
 
     def saida2(self):
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":None, "ULAOp": 0b00, "ULAFonteB":0b10, "ULAFonteA":0b1, "EscReg":None, "RegDst":0
+            "FontePC":None, "ULAOp": 0b000, "ULAFonteB":0b10, "ULAFonteA":0b1, "EscReg":None, "RegDst":0
         }
 
         if "lw" in self.comando[0]:
             self.estado_atual = 3
         elif "sw" in self.comando[0]:
             self.estado_atual = 5
+        else:
+            # Caso seja tipo i
+            self.estado_atual = 7
+
+            if "ori" in self.comando[0]:
+                saida["ULAOp"] = 0b110
+            elif "andi" in self.comando[0]:
+                saida["ULAOp"] = 0b011
+            
+            # andi, lui ULAOp == sw/lw
+
 
         return saida
 
@@ -94,7 +105,7 @@ class Controle():
         #execução
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":None, "ULAOp":0b10, "ULAFonteB":0b00, "ULAFonteA":0b1, "EscReg":None, "RegDst":0
+            "FontePC":None, "ULAOp":0b010, "ULAFonteB":0b00, "ULAFonteA":0b1, "EscReg":None, "RegDst":0
         }
         self.estado_atual = 7
         return saida
@@ -105,14 +116,22 @@ class Controle():
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0b0, "IREsc": None,
             "FontePC":None, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":0b1, "RegDst":0b1
         }
+
         self.estado_atual = 0
+
+        # Se for tipo r 
+        if len(self.comando[1]) >= 6 and int(self.comando[1][0:6], 2) == 0:
+            return saida
+
+        # Se for tipo i altera "RegDist" para 0 antes de mandar dados
+        saida["RegDist"] = 0
         return saida
 
     def saida8(self):
         #Termino do desvio condicional
         saida = {
             "PCEscCond":0b1, "PCEsc":0, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":0b01, "ULAOp": 0b01, "ULAFonteB":0b00, "ULAFonteA":1, "EscReg":None, "RegDst":0
+            "FontePC":0b01, "ULAOp": 0b001, "ULAFonteB":0b00, "ULAFonteA":1, "EscReg":None, "RegDst":0
         }
         self.estado_atual = 0
         return saida
@@ -126,6 +145,7 @@ class Controle():
         self.estado_atual = 0
         return saida
 
+    def 
 
 ### Testa
 # def p1():
