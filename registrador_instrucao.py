@@ -5,10 +5,12 @@ class RegistradorInstrucao():
     def __init__(self):
         self.instr = None
         self.binary_instr = f'{0:032b}'
+        self.IREsc = 0b0
 
 
-    def operate(self):
-        if "$" in str(self.instr):
+    def operate(self, instruction):
+        if self.IREsc == 0b1:
+            self.instr = instruction
             self.decodify_bin()
         
     def decodify_bin(self):

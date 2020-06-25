@@ -88,3 +88,7 @@ def extend_my_bits(bits: str):
 
 def shift_l_my_bits(bits:str):
     return int(bits, 2) << 2
+
+
+class Handler():
+    hand = 0

@@ -5,8 +5,9 @@ from tkinter import*
 from memoria import Memoria
 from ula import ULA
 from controle import Controle
-from utils import extend_my_bits,shift_l_my_bits,store_in_memory
+from utils import extend_my_bits,shift_l_my_bits,store_in_memory, Handler
 from registrador_instrucao import RegistradorInstrucao
+from reg_data_mem import RegDados
 from register import Register
 from pc import PC
 
@@ -74,13 +75,21 @@ sinais = controle.dic_saida
 bloco_controle = s
 banco_registradores = Register()
 registrador_instrucao = RegistradorInstrucao()
+reg_dados = RegDados()
 memoria = Memoria()
 pece = PC()
 store_in_memory('teste2.asm', memoria)
+
+sinais_grid = Handler()
+sinais_grid.hand = s
+
 def process():
     pc = pece.pc
 
+    #Pegando os sinais do estado atual
+
     bloco_controle = controle.saida()
+    sinais_grid.hand = bloco_controle
     print(f'PC {pc}')
     print(f'Estado atual {controle.estado_atual}')
 
@@ -89,17 +98,24 @@ def process():
         1:ula.operate()[0]
     }
 
+    #Colocando os sinais na Memória
     memoria.lerMem = bloco_controle['LerMemoria']
     memoria.escMem = bloco_controle['EscMem']
+
+    #Se não é instruçao ou dado, então nao farei nada
     if bloco_controle['IouD'] is None:
         memoria.endereco = None
     else:
+        #Se é instrucao ou dado, então vejo a saida do MUX_PC
         memoria.endereco = mux_pc[bloco_controle['IouD']]
 
-    if controle.estado_atual == 1:
-        registrador_instrucao.instr = str(memoria.operate())
-        registrador_instrucao.operate() #IREsc??
-    print('Instrucao: '+registrador_instrucao.instr)
+    #Estado 1 é o da busca da instrução
+    registrador_instrucao.IREsc = bloco_controle['IREsc']
+    registrador_instrucao.operate(memoria.operate())
+
+    reg_dados.dado_lido = memoria.operate()
+    
+    print('Instrucao: '+str(registrador_instrucao.instr))
 
     #Enviando a instrução para o bloco de controle
     controle.comando = (registrador_instrucao.instr, registrador_instrucao.binary_instr)
@@ -111,7 +127,7 @@ def process():
 
     mux_reg_dado = {
         0:ula.operate()[0],
-        1:'Nada por enquanto, falta fazer o registrador de dados da memoria'
+        1:reg_dados.dado_lido
     }
 
     banco_registradores.read_register1 = int(registrador_instrucao.binary_instr[6:11], 2)
@@ -142,7 +158,7 @@ def process():
     ula.alu_operation = bloco_controle['ULAOp']
     ula.instr = registrador_instrucao.instr
 
-    # saida_ula, zero = ula.operate()
+    saida_ula, zero = ula.operate()
 
     mux_saida_ula = {
         0:ula.operate()[0],
@@ -151,7 +167,7 @@ def process():
     }
     
     if bloco_controle['FontePC'] is not None:
-        pece.pc = mux_saida_ula[bloco_controle['FontePC']]
+        pece.operate(mux_saida_ula[bloco_controle['FontePC']])
     print(pc)
 
 
@@ -250,7 +266,7 @@ def atualiza_sinais():
             if sig >= len(aux):
                 break
             
-            dictio = sinais[controle.estado_atual]()
+            dictio = sinais_grid.hand
             output = dictio[aux[sig]]
             if output == None:
                 output = str(output)
