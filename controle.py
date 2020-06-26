@@ -45,6 +45,11 @@ class Controle():
         elif len(self.comando[1]) >= 6 and int(self.comando[1][0:6], 2) == 0:
             # Caso seja tipo r
             self.estado_atual = 6
+
+            # Caso shift vai para o mesmo do tipo i
+            if "sll" in self.comando[0] or "srl" in self.comando[0]:
+                self.estado_atual = 2
+
         else:
             #caso seja tipo i vai para o mesmo do sw/lw
             self.estado_atual = 2
@@ -61,13 +66,15 @@ class Controle():
         elif "sw" in self.comando[0]:
             self.estado_atual = 5
         else:
-            # Caso seja tipo i
+            # Caso seja tipo i ou shift
             self.estado_atual = 7
 
             if "ori" in self.comando[0]:
                 saida["ULAOp"] = 0b110
             elif "andi" in self.comando[0]:
                 saida["ULAOp"] = 0b011
+            elif "srl" in self.comando[0]:
+                saida["ULAOp"] = 0b010
             
             # andi, lui ULAOp == sw/lw
 
