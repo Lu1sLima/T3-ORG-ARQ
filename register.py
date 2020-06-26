@@ -7,7 +7,7 @@ class Register():
         '''
             Register must be integer!
         '''
-        self.registers = [0] + [None] * 31
+        self.registers = [0] * 32
         self.reg_write: bin = 0b0 #mudar pra satring
         self.read_register1 = read_register1
         self.read_register2 = read_register2

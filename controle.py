@@ -54,9 +54,8 @@ class Controle():
     def saida2(self):
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":None, "ULAOp": 0b000, "ULAFonteB":0b10, "ULAFonteA":0b1, "EscReg":None, "RegDst":0b0
+            "FontePC":None, "ULAOp": 0b000, "ULAFonteB":0b10, "ULAFonteA":0b1, "EscReg":0b00, "RegDst":0b0
         }
-
         if "lw" in self.comando[0]:
             self.estado_atual = 3
         elif "sw" in self.comando[0]:
@@ -124,7 +123,7 @@ class Controle():
             return saida
 
         # Se for tipo i altera "RegDist" para 0 antes de mandar dados
-        saida["RegDist"] = 0
+        saida["RegDst"] = 0b00
         return saida
 
     def saida8(self):

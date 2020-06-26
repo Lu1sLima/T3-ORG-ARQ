@@ -18,12 +18,16 @@ class ULA():
         '''
             Used for: or
         '''
+        # if 'ori' in self.instr and '0x1001' in self.op_1:
+            
         return self.op_1 | self.op_2
 
     def __add_operation(self):
         '''
             Used for: add, lw and sw
         '''
+        if 'lui' in self.instr and '0x00001001' in self.instr:
+            self.op_2  = self.op_2 << 16
         return self.op_1 + self.op_2
 
     def __subtract_operation(self):

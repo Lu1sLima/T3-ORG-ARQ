@@ -1,4 +1,4 @@
-class ULA_OPERATOR():
+class ULA_operator():
 
     def __init__(self):
         self.ULAOp = None #ou 0?

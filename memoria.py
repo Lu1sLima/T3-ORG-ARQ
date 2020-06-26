@@ -28,7 +28,7 @@
     
     # reduzir 0x10010000
     def calc_pos_data(self, pos):
-        pos_real = (int(str(pos), 16) - int("0x10010000", 16)) / 4
+        pos_real = (int(pos, 16) - int("0x10010000", 16)) / 4
         pos_real = int(pos_real) + 40
         
         return pos_real

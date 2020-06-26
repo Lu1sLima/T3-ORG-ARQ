@@ -3,7 +3,7 @@ import re
 class RegistradorInstrucao():
 
     def __init__(self):
-        self.instr = None
+        self.instr = ''
         self.binary_instr = f'{0:032b}'
         self.IREsc = 0b0
 
@@ -37,7 +37,7 @@ class RegistradorInstrucao():
         }
 
         j_type = {
-        #OPCODE será o valor que está armazenado neles
+        #OPCODE será o valor que está armazenado nefles
         "beq":0x4,
         "bne":0x5, 
         }
@@ -65,17 +65,22 @@ class RegistradorInstrucao():
         elif opcode in i_type:
             bin_opcode = f'{int(i_type[opcode]):06b}'
 
-            rt = f'{int(instruction[1]):05b}'
             if opcode in ('lui'):
                 rs = f'{0:05b}'
-                imm = f'{int(instruction[2]):016b}'
+                rt = f'{int(instruction[1]):05b}'
+                imm = f'{int(instruction[2], 16):016b}'
+                self.binary_instr = bin_opcode+rs+rt+imm
+                return
             elif opcode in ('lw', 'sw'):
                 rs = f'{int(instruction[3]):05b}'
                 imm = f'{int(instruction[2]):016b}'
             
-            rs = f'{int(instruction[1]):05b}'
-            rt = f'{int(instruction[2]):05b}'
-            imm = f'{int(instruction[3]):016b}'
+            rt = f'{int(instruction[1]):05b}'
+            rs = f'{int(instruction[2]):05b}'
+            if '0x' in instruction[3]:
+                imm = f'{int(instruction[3], 16):016b}'
+            else:
+                imm = f'{int(instruction[3]):016b}'
             self.binary_instr = bin_opcode+rs+rt+imm
         
         else:
