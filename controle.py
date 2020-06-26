@@ -27,7 +27,7 @@ class Controle():
     def saida0(self):
         saida = {
             "PCEscCond": None, "PCEsc":0b1,  "IouD":0b0, "LerMemoria":0b1, "EscMem":None,"MemParaReg":0, "IREsc":0b1, 
-            "FontePC":0b00, "ULAOp": 0b000, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":None, "RegDst":0
+            "FontePC":0b00, "ULAOp": 0b000, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":0b00, "RegDst":0
         }
         self.estado_atual = 1
         return saida
@@ -35,7 +35,7 @@ class Controle():
     def saida1(self):
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":None, "ULAOp": 0b000, "ULAFonteB":0b11, "ULAFonteA":0b0, "EscReg":None, "RegDst":0
+            "FontePC":None, "ULAOp": 0b000, "ULAFonteB":0b11, "ULAFonteA":0b0, "EscReg":0b00, "RegDst":0
             }
 
         if "lw" in self.comando[0] or "sw" in self.comando[0]:
@@ -78,7 +78,7 @@ class Controle():
         # Acesso a memoria
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":0b01, "LerMemoria":0b1, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":None, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":None, "RegDst":0
+            "FontePC":None, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":0b00, "RegDst":0
         }
         self.estado_atual = 4
         return saida
@@ -95,7 +95,7 @@ class Controle():
         #acesso a memoria
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":0b1, "LerMemoria":None, "EscMem":0b1, "MemParaReg":0, "IREsc":None,
-            "FontePC":None, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":None, "RegDst":0
+            "FontePC":None, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":0b00, "RegDst":0
         }
         self.estado_atual = 0
         return saida
@@ -104,7 +104,7 @@ class Controle():
         #execução
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":None, "ULAOp": 0b010, "ULAFonteB":0b00, "ULAFonteA":0b1, "EscReg":None, "RegDst":0
+            "FontePC":None, "ULAOp": 0b010, "ULAFonteB":0b00, "ULAFonteA":0b1, "EscReg":0b00, "RegDst":0
         }
         self.estado_atual = 7
         return saida
@@ -130,7 +130,7 @@ class Controle():
         #Termino do desvio condicional
         saida = {
             "PCEscCond":0b1, "PCEsc":0, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":0b01, "ULAOp": 0b001, "ULAFonteB":0b00, "ULAFonteA":0b1, "EscReg":None, "RegDst":0
+            "FontePC":0b01, "ULAOp": 0b001, "ULAFonteB":0b00, "ULAFonteA":0b1, "EscReg":0b00, "RegDst":0
         }
         self.estado_atual = 0
         return saida
@@ -139,7 +139,7 @@ class Controle():
         self.estado_atual = 0
         saida = {
             "PCEscCond":None, "PCEsc":0b1, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":0b01, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":None, "RegDst":0
+            "FontePC":0b01, "ULAOp":None, "ULAFonteB":0, "ULAFonteA":0, "EscReg":0b00, "RegDst":0
         }
         self.estado_atual = 0
         return saida

@@ -24,7 +24,7 @@ class ULA_operator():
 
     def operate(self):
         if self.ULAOp == 0b010: #Se TIPO-R
-            if self.func == 0b100000: #se add
+            if self.func == 0b100001: #se add
                 return 0b000
             elif self.func == 0b100100: #se and
                 return 0b011

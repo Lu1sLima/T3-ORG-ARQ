@@ -185,6 +185,7 @@ def process():
     # 001: beq, bne
     # 010: R-Type
     operacao_da_ula.ULAOp = bloco_controle['ULAOp']
+    operacao_da_ula.func = int(registrador_instrucao.binary_instr[26:], 2)
 
     # Pegando os operadores da ula a partir da saída dos MUXs
     ula.op_1 = mux_ula1[bloco_controle['ULAFonteA']]
