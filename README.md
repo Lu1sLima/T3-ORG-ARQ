@@ -7,6 +7,8 @@
 
 - :white_check_mark: **lw**
 - :white_check_mark: **addu**
+- :white_check_mark: **and**
+- :white_check_mark: **andi**
 - :white_check_mark: **addiu**
 - :white_check_mark: **lui**
 - :white_check_mark: **ori**
