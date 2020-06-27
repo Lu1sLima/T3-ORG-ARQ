@@ -5,7 +5,7 @@
 
 ## INSTRUÇÕES FUNCIONANDO:
 
-- [X] lw
+- :white_check_mark: lw
 - [x] addu
 - [x] lui
 - [x] ori
