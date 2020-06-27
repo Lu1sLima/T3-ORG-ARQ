@@ -5,7 +5,7 @@
 
 ## INSTRUÇÕES FUNCIONANDO:
 
-- [] lw
+- [X] lw
 - [x] addu
 - [x] lui
 - [x] ori
