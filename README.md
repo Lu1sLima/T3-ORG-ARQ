@@ -10,3 +10,4 @@
 - :white_check_mark: **addiu**
 - :white_check_mark: **lui**
 - :white_check_mark: **ori**
+- :white_check_mark: **xor**
