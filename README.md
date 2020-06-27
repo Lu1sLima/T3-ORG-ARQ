@@ -5,7 +5,7 @@
 
 ## INSTRUÇÕES FUNCIONANDO:
 
-<li>:white_check_mark: lw</li>
+<li>:white_check_mark: lw
 :white_check_mark: addu
 :white_check_mark: lui
-:white_check_mark: ori
+:white_check_mark: ori</li>
