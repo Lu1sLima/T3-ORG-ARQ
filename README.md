@@ -14,8 +14,8 @@
 - :white_check_mark: **lui**
 - :white_check_mark: **ori**
 - :white_check_mark: **xor**
-- :white_check_mark: **beq**
-- :white_check_mark: **bne**
+- :white_check_mark: **beq: com saltos negativos e positivos**
+- :white_check_mark: **bne: com saltos negativos e positivos**
 - :white_check_mark: **srl**
 - :white_check_mark: **sll**
 - :x:  **slt**
@@ -45,6 +45,7 @@ main:
     sll $16, $16, 0x00000002 # Shiftando 2 para à esquerda no dado que está no $16 (11 << 2), resultado deve ser 44 e será guardado em $16
     lui $17, 0x0000000C # Colocando C(12) no registrador $17
     srl $17, $17, 0x00000002 # Shiftando 2 para à direita no dado que está no $17 (12 >> 2), resultado deve ser 3 e será guardado em $17
+    beq $0, $0, 0xffffffed # Volta para a label main, sim, ficará em loop infinito se for ficar dando enter, mas é apenas para ilustrar
 .data
     A: .word	30
     B: .word	5
