@@ -16,9 +16,9 @@
 - :white_check_mark: **xor**
 - :x: **beq**
 - :x: **bne**
-- :x: **srl**
+- :white_check_mark: **srl**
 - :white_check_mark: **sll**
-- :white_check_mark: **slt**
+- :x:  **slt**
 
 
 ```assembly
@@ -40,6 +40,10 @@ main:
     ori $15, $1, 0x00000000 #Término de la $15, A, $15 deve ter o endereço de A, que é 40
     sw $10, 0($15) # Guarda o valor que está em $10(que é 45) na posicao de memória armazenada em $15(que é 40) e
     # Substitui na memória de dados a posicao 40 pelo valor que está contido em $10, que é 45, ou seja, no .data, A será 45
+    lui $16, 0x0000000B # Colocando B(11) no registrador $16
+    sll $16, $16, 0x00000002 # Shiftando 2 para à esquerda no dado que está no $16 (11 << 2), resultado deve ser 44 e será guardado em $16
+    lui $17, 0x0000000C # Colocando C(12) no registrador $17
+    srl $17, $17, 0x00000002 # Shiftando 2 para à direita no dado que está no $17 (12 >> 2), resultado deve ser 3 e será guardado em $17
 .data
     A: .word	30
     B: .word	5
