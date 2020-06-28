@@ -89,6 +89,12 @@ def extend_my_bits(bits: str):
 def shift_l_my_bits(bits:str):
     return int(bits, 2) << 2
 
+def hexadecimal_twos_complement(hexa: str):
+    salto = 0xffffffff - int(hexa, 16)
+    return salto+1
+    # if salto == 0:
+    #     return 0
+    # return salto
 
 class Handler():
     hand = 0

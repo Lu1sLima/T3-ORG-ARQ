@@ -34,10 +34,13 @@ class ULA():
 
     def __subtract_operation(self):
         '''
-            Used for: sub, beq
+            Used for: sub, beq, bne
         '''
         sub = self.op_1 - self.op_2
-        if sub == 0:
+
+        if 'beq' in self.instr and sub == 0:
+            self.zero = 1
+        elif 'bne' in self.instr and sub != 0:
             self.zero = 1
         return sub #aqui tm que ter zero
 

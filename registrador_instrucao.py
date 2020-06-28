@@ -1,4 +1,5 @@
 import re
+from utils import hexadecimal_twos_complement
 
 class RegistradorInstrucao():
 
@@ -92,6 +93,12 @@ class RegistradorInstrucao():
             bin_opcode = f'{int(j_type[opcode]):06b}'
             rs = f'{int(instruction[1]):05b}'
             rt = f'{int(instruction[2]):05b}'
+            # Cacula saltos para trás
+            if '0xffff' in instruction[3]:
+                negative = hexadecimal_twos_complement(instruction[3])
+                label = f'{-int(negative):016b}'
+                self.binary_instr = bin_opcode+rs+rt+label
+                return
             label = f'{int(instruction[3], 16):016b}'
 
             self.binary_instr = bin_opcode+rs+rt+label

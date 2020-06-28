@@ -40,7 +40,7 @@ class Controle():
 
         if "lw" in self.comando[0] or "sw" in self.comando[0]:
             self.estado_atual = 2
-        elif "beq" in self.comando[0]:
+        elif "beq" in self.comando[0] or "bne" in self.comando[0]:
             self.estado_atual = 8
         elif len(self.comando[1]) >= 6 and int(self.comando[1][0:6], 2) == 0:
             # Caso seja tipo r

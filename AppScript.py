@@ -72,7 +72,7 @@ def process():
 
     ##################### Apensar para fins d debug #####################
 
-    if 'sll' in registrador_instrucao.instr:
+    if 'beq' in registrador_instrucao.instr:
         controle.estado_atual
     print(f'PC {pc}')
     print(f'Estado atual {controle.estado_atual}')
@@ -149,7 +149,7 @@ def process():
         0:int(hex(saida_reg_2), 16), #Vem do dado lido do registrador a ser lido #2
         1:1, #Para pc++
         2:int(extended_bits, 2), #Transforma o binário de 32 bits em inteiro
-        3:int(shif_my_bits, 2), #Transforma o binário que foi shiftado 2 bits para esquerda em inteiro
+        3:int(shif_my_bits, 2)//4, # Teoricamente isso nao precisa mais, é para calcular saltos condicionais, nas nós já fazemos o calculo antes
         4:int(registrador_instrucao.binary_instr[21:26], 2) #Coloquei para acomodar instrucoes do tipo SHIFT, dai passo apenas o SHAMT para o ULAFonteB
     }
 
@@ -176,7 +176,7 @@ def process():
 
     # Apenas para nao dar erro em algumas instruções especiais, tipo LUI, que usa o ADD mas faz um shift de 16 bits
     # Além disso, nós não precisamos da instrução para realizar as duas primeiras etapas (BUSCA E DECODIFICAÇÃO), que seriam estados 0 e 1
-    if controle.estado_atual <= 1:
+    if controle.estado_atual <= 1 and ula.alu_operation != 0b001: # Acrescentei isso pq se for salto condicionao eu preciso dessa instrução na ULA para saber se é beq ou bne
         ula.instr = ''
     else:
     # Agora precisamos da instrução dentro da ULA, para casos especiais (lui, ori)
@@ -199,9 +199,6 @@ def process():
         # 2:None #Nao tem necessidade, pois É USADO PARA JUMP, e não tem no trabalho
     }
 
-    # Atualizando o bloco de SAIDA_ULA(Armazenamento da função ATUAL para ser usado na PRÓXIMA FUNCAO)
-    if saida_ula_atual is not None:
-        saida_ula.saida = saida_ula_atual
 
     # Sinais de controle de PC (PARA FAZER O AND E OR)
     pece.pcEsCond = bloco_controle['PCEscCond']
@@ -210,6 +207,10 @@ def process():
     if bloco_controle['FontePC'] is not None:
         # Atualizando o valor de PC - NÃO TESTEI DESVIOS CONDICIONAIS E INCONDICIONAIS
         pece.operate(mux_saida_ula[bloco_controle['FontePC']])
+
+    # Atualizando o bloco de SAIDA_ULA(Armazenamento da função ATUAL para ser usado na PRÓXIMA FUNCAO)
+    if saida_ula_atual is not None:
+        saida_ula.saida = saida_ula_atual
 
 
 
