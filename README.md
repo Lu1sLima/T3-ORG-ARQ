@@ -14,6 +14,11 @@
 - :white_check_mark: **lui**
 - :white_check_mark: **ori**
 - :white_check_mark: **xor**
+- :x: **beq**
+- :x: **bne**
+- :x: **srl**
+- :x: **sll**
+- :x: **slt**
 
 
 ```assembly
