@@ -19,7 +19,8 @@ main:
     sll $16, $16, 0x00000002
     lui $17, 0x0000000C
     srl $17, $17, 0x00000002
-    beq $0, $0, 0xffffffed
+    beq $0, $10, 0xffffffed
+    slt $18, $10, $10
 .data
     A: .word	30
     B: .word	5

@@ -46,11 +46,9 @@ class ULA():
 
     def __slt_operation(self):
         if self.op_1 < self.op_2:
-            self.zero = 0b1
-            return None #Ver esses retornos!
+            return 0b01 #Ver esses retornos!
         else:
-            self.zero = 0b0
-            return None #Ver esses retornos!
+            return 0b00 #Ver esses retornos!
 
     def __xor_operation(self):
         return self.op_1 ^ self.op_2

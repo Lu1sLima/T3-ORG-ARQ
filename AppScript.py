@@ -26,29 +26,12 @@ tablayout=Notebook(frame2)
 s = {"PCEscCond": None, "PCEsc":0b1,  "IouD":0b0, "LerMemoria":0b1, "EscMem":None,"MemParaReg":None, "IREsc":0b1, 
             "FontePC":0b00, "ULAOp": 0b00, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":None, "RegDst":None}
 
-
 # Valores Dados Internos
-ds = {"operation":"", "dadoA":"", "dadoB":"", "regLido1":"", "regLido2":"",
-    "regEsc":"", "dadoEsc":"", "regDadoMem":"", "ulaD1":"", "ulaD2":"",
-    "atual":""}
+ds = {"Instrução":"",  "RegLido1":"", "RegLido2":"", "SaidaRegA":"", "SaidaRegB":"",
+    "RegEsc":"", "DadoEscReg":"", "RegDadoMem":"", "ULAOp1":"", "ULAOp2":"",
+    "ULASaidaAtual":"", "ULASaida":"", "Estado":"0", 'PC':""}
 
-# Funçoes que alteram dados
-def altera_registradores(dic_reg):
-    r = dic_reg
-    atualiza_reg()
-
-def altera_memoria(dic_mem):
-    m = dic_mem
-    atualiza_memoria()
-
-def altera_data(dic_data):
-    d = dic_data
-    atualiza_data()
-
-def altera_sinais(dic_sinais):
-    s = dic_sinais
-    atualiza_sinais()
-
+########################### INSTANCIAÇÃO DOS MÓDULOS ########################
 ula = ULA()
 controle = Controle()
 sinais = controle.dic_saida
@@ -66,17 +49,15 @@ store_in_memory('teste.asm', memoria)
 sinais_grid = Handler()
 sinais_grid.hand = s
 
+###########################################################################
+
 def process():
 
     pc = pece.pc #PC
 
-    ##################### Apensar para fins d debug #####################
-
-    if 'beq' in registrador_instrucao.instr:
-        controle.estado_atual
-    print(f'PC {pc}')
-    print(f'Estado atual {controle.estado_atual}')
-
+    ##################### Apenas para aparecer no grid ##################
+    ds['Estado'] = controle.estado_atual
+    ds['PC'] = pc
     #####################################################################
 
     bloco_controle = controle.saida() #Pegando o dicionário com os sinais de acordo com o estado
@@ -102,10 +83,7 @@ def process():
     registrador_instrucao.operate(memoria.operate()) #Pega a instrução da memória e codifica em binário
 
     if memoria.endereco is not None:
-        reg_dados.dado_lido = memoria.operate() #Registrador de dados da memória (utilizado em SW e LW) TESTAR!!
-    
-    #Apenas para fins de DEBUG
-    print('Instrucao: '+str(registrador_instrucao.instr))
+        reg_dados.dado_lido = memoria.operate() #Registrador de dados da memória (utilizado em SW e LW)
 
     #Enviando a instrução para o bloco de controle
     #Aqui nós enviamos a instrução literal em string('lui $2, 4') e também a instrução codificada em binário
@@ -131,6 +109,7 @@ def process():
 
     extended_bits = extend_my_bits(registrador_instrucao.binary_instr[16:]) #Extende um binário para 32bits
     shif_my_bits = f'{shift_l_my_bits(extended_bits):032b}' #Recebe um binário(string), transforma para inteiro, faz o shift para esquerda de 2 bits e vira binario novamente
+    #Teoricamente o shift_my_bits não é usado, pois nós já fazemos o acerto da posicao de memória antes dele
 
     #Pegando a saida do banco de registradores
     saida_reg_1, saida_reg_2 = banco_registradores.operate()
@@ -176,7 +155,7 @@ def process():
 
     # Apenas para nao dar erro em algumas instruções especiais, tipo LUI, que usa o ADD mas faz um shift de 16 bits
     # Além disso, nós não precisamos da instrução para realizar as duas primeiras etapas (BUSCA E DECODIFICAÇÃO), que seriam estados 0 e 1
-    if controle.estado_atual <= 1 and ula.alu_operation != 0b001: # Acrescentei isso pq se for salto condicionao eu preciso dessa instrução na ULA para saber se é beq ou bne
+    if controle.estado_atual <= 1 and ula.alu_operation != 0b001: # Acrescentei isso pq se for salto condicionaol eu preciso dessa instrução na ULA para saber se é beq ou bne
         ula.instr = ''
     else:
     # Agora precisamos da instrução dentro da ULA, para casos especiais (lui, ori)
@@ -185,13 +164,8 @@ def process():
     # Opera a ULA com resultado e flag de zero
     saida_ula_atual, zero = ula.operate()
 
-    # Colocando a flag de zero dentro do bloco que faz o  (PCEsc AND (zero or PCEscCond)) PARA SALTOS CONDICIONAIS E INCONDICIONAIS --- TESTAR!
+    # Colocando a flag de zero dentro do bloco que faz o  (PCEsc AND (zero or PCEscCond)) PARA SALTOS CONDICIONAIS E INCONDICIONAIS
     pece.zero = zero
-
-    # Se encontrarmos instruções que mexem com o data precisamos ajeitar a posição para ficar entre 40-49 dentro do array
-    if saida_ula_atual:
-        if '0x1001' in hex(saida_ula_atual) and 'ori' in registrador_instrucao.instr:
-            saida_ula_atual = memoria.calc_pos_data(hex(saida_ula_atual))
 
     mux_saida_ula = {
         0:saida_ula_atual, # Saida da operação realizada AGORA na ULA
@@ -211,6 +185,21 @@ def process():
     # Atualizando o bloco de SAIDA_ULA(Armazenamento da função ATUAL para ser usado na PRÓXIMA FUNCAO)
     if saida_ula_atual is not None:
         saida_ula.saida = saida_ula_atual
+
+    ###################### PARA O GRID APENAS ##############################
+    ds['RegDadoMem'] = reg_dados.dado_lido
+    ds['Instrução'] = registrador_instrucao.instr
+    ds['RegLido1'] = banco_registradores.read_register1
+    ds['RegLido2'] = banco_registradores.read_register2
+    ds['RegEsc'] = banco_registradores.write_register
+    ds['DadoEscReg'] = banco_registradores.write_data
+    ds['SaidaRegA'] = saida_reg_1
+    ds['SaidaRegB'] = saida_reg_2
+    ds['ULAOp1'] = ula.op_1
+    ds['ULAOp2'] = ula.op_2
+    ds['ULASaidaAtual'] = saida_ula_atual
+    ds['ULASaida'] = saida_ula.saida
+    ########################################################################
 
 
 
@@ -297,16 +286,11 @@ def atualiza_sinais():
             
             dictio = sinais_grid.hand
             output = str(dictio[aux[sig]])
-            # if output == None:
-            #     output = str(output)
-            # else:
-            #     output = bin(output)
             label=Label(tab3,text= str(aux[sig]) + " = " + output,bg="black",fg="white",padx=3,pady=3)
             label.grid(row=row,column=column,sticky="nsew",padx=1,pady=1)
             tab3.grid_columnconfigure(column,weight=1)
             sig += 1
             
-    
     tablayout.add(tab3,text="Sinais")
     tablayout.pack(fill="both")
         
@@ -317,21 +301,18 @@ atualiza_sinais()
 tab4=Frame(tablayout)
 tab4.pack(fill="both")
 
+
 def atualiza_dados_internos():
     sig = 0
     aux = list(ds.keys())
     
     #input box Table
-    for row in range(6):
+    for row in range(7):
         for column in range(2):
             if sig >= len(aux):
                 break
             
             output = str(ds[aux[sig]])
-            # if output == None:
-            #     output = str(output)
-            # else:
-            #     output = bin(output)
             label=Label(tab4,text= str(aux[sig]) + " : " + output,bg="black",fg="white",padx=3,pady=3)
             label.grid(row=row,column=column,sticky="nsew",padx=1,pady=1)
             tab4.grid_columnconfigure(column,weight=1)
@@ -359,6 +340,7 @@ def keypress (event):
                 atualiza_data()
                 atualiza_memoria()
                 atualiza_reg()
+                atualiza_dados_internos()
             except Exception as e:
                 print("Não há mais instruções na memória!")
         # Passar os dados corretos p/ as funçoes:
