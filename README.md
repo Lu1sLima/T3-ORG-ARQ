@@ -17,8 +17,8 @@
 - :x: **beq**
 - :x: **bne**
 - :x: **srl**
-- :x: **sll**
-- :x: **slt**
+- :white_check_mark: **sll**
+- :white_check_mark: **slt**
 
 
 ```assembly
