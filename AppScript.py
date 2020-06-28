@@ -46,6 +46,7 @@ operacao_da_ula = ULA_operator()
 
 store_in_memory('teste.asm', memoria)
 
+# Feito apenas para atualizar os sinais
 sinais_grid = Handler()
 sinais_grid.hand = s
 
@@ -323,8 +324,21 @@ def atualiza_dados_internos():
         
 atualiza_dados_internos()
 
+def atualiza():
+    try:
+        process()
+        atualiza_sinais()
+        atualiza_data()
+        atualiza_memoria()
+        atualiza_reg()
+        atualiza_dados_internos()
+    except Exception as e:
+        print("Não há mais instruções na memória!")
 
 frame = Frame(window, width=600, height=400)
+button = Button(frame, text ="Next", command=atualiza)
+button.grid(row=20, column=0)
+button.pack()
 
 def keypress (event):
     print(event.char)

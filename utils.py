@@ -1,7 +1,9 @@
 import re
+import os
 
 def store_in_memory(file_name: str, memoria):
-    with open(f'files\{file_name}', 'r') as file:
+    files_path = os.path.join('files', file_name)
+    with open(files_path, 'r') as file:
         lines = file.readlines()
 
         line = 0
@@ -9,6 +11,11 @@ def store_in_memory(file_name: str, memoria):
 
         #Se o arquivo começar com .text
         if '.text' in lines[0]:
+            #Pq pulo para terceira linha?
+            #Linha 1: .text
+            #Linha 2: .globl main
+            #Linha 3: main:
+            #Na quarta linha (posicao 3 do array), começam as instruções.
             line = 3
             #Colocando as INSTRUÇÕES(.text) na memória
             while(line < len(lines)):
@@ -73,6 +80,11 @@ def store_in_memory(file_name: str, memoria):
 
             instr = 0
             #Colocando as INSTRUÇÕES(.text) na memória
+            #Pq pulo para terceira linha?
+            #Linha 1: .text
+            #Linha 2: .globl main
+            #Linha 3: main:
+            #Na quarta linha (posicao 3 do array), começam as instruções.
             for i in range(line+3, len(lines)):
                 if '$' in lines[i]:
                     instruction = lines[i].strip()
