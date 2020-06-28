@@ -14,6 +14,8 @@ class RegistradorInstrucao():
             self.decodify_bin()
         
     def decodify_bin(self):
+        if self.instr == 0:
+            raise ReferenceError("Não há mais instruções na memória!")
         instruction = re.split('\W+', self.instr)
 
         r_type = {
@@ -72,9 +74,11 @@ class RegistradorInstrucao():
                 self.binary_instr = bin_opcode+rs+rt+imm
                 return
             elif opcode in ('lw', 'sw'):
+                rt = f'{int(instruction[1]):05b}'
                 rs = f'{int(instruction[3]):05b}'
-                imm = f'{int(instruction[2]):016b}'
-            
+                imm = f'{(int(instruction[2], 16)//4):016b}'
+                self.binary_instr = bin_opcode+rs+rt+imm
+                return
             rt = f'{int(instruction[1]):05b}'
             rs = f'{int(instruction[2]):05b}'
             if '0x' in instruction[3]:

@@ -24,7 +24,8 @@ class Register():
         reg_data1 = self.registers[self.read_register1]
         reg_data2 = self.registers[self.read_register2]
 
-        return reg_data1, reg_data2
+    #VER SE ISSO VAI BUGAR
+        return int(reg_data1), int(reg_data2)
 
     def __write_data(self):
         '''Aqui eu apenas verifico se o regWrite é mesmo 1, e se sim, vou no banco de registradores (ARRAY) 

@@ -22,34 +22,6 @@ frame2.pack(fill="both")
 
 tablayout=Notebook(frame2)
 
-# Valores registradores
-# r = {'$0': 10, '$1': 0, '$2': 0, '$3': 0,
-#      '$4': 0, '$5': 0, '$6': 0, '$7': 0,
-#      '$8': 0, '$9': 0, '$10': 0, '$11': 0,
-#      '$12': 0, '$13': 0, '$14': 0, '$15': 0,
-#      '$16': 0, '$17': 0, '$18': 0, '$19': 0,
-#      '$20': 0, '$21': 0, '$22': 0, '$23': 0,
-#      '$24': 0, '$25': 0, '$26': 0, '$27': 0,
-#      '$28': 0, '$29': 0, '$30': 0, '$31': 0}
-
-r = [1] * 32
-
-# Valores memoria
-# m = {0: 0, 1: 0, 2: 0, 3: 0,
-#      4: 0, 5: 0, 6: 0, 7: 0,
-#      8: 0, 9: 0, 10: 0, 11: 0,
-#      12: 0, 13: 0, 14: 0, 15: 0,
-#      16: 0, 17: 0, 18: 0, 19: 0,
-#      20: 0, 21: 0, 22: 0, 23: 0,
-#      24: 0, 25: 0, 26: 0, 27: 0,
-#      28: 0, 29: 0, 30: 0, 31: 0,
-#      32: 0, 33: 0, 34: 0, 35: 0,
-#      36: 0, 37: 0, 38: 0, 39: 0}
-
-# Valores .data
-# d = {40: 0, 41: 0, 42: 0, 43: 0, 44: 0, 45: 0,
-#      46: 0, 47: 0, 48: 0, 49: 0}
-
 # Valores de sinais
 s = {"PCEscCond": None, "PCEsc":0b1,  "IouD":0b0, "LerMemoria":0b1, "EscMem":None,"MemParaReg":None, "IREsc":0b1, 
             "FontePC":0b00, "ULAOp": 0b00, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":None, "RegDst":None}
@@ -83,7 +55,7 @@ pece = PC()
 saida_ula = Saida_ULA()
 operacao_da_ula = ULA_operator()
 
-store_in_memory('teste2.asm', memoria)
+store_in_memory('teste.asm', memoria)
 
 sinais_grid = Handler()
 sinais_grid.hand = s
@@ -94,7 +66,7 @@ def process():
 
     ##################### Apensar para fins d debug #####################
 
-    if 'addu' in registrador_instrucao.instr:
+    if 'sw' in registrador_instrucao.instr:
         controle.estado_atual
     print(f'PC {pc}')
     print(f'Estado atual {controle.estado_atual}')
@@ -119,12 +91,12 @@ def process():
     else:
         #Buscando dado na memória a partir do resultado de saída do mux_pc
         memoria.endereco = mux_pc[bloco_controle['IouD']]
-    
-    
+
     registrador_instrucao.IREsc = bloco_controle['IREsc'] #Sinal de controle do registrador de instrução
     registrador_instrucao.operate(memoria.operate()) #Pega a instrução da memória e codifica em binário
 
-    reg_dados.dado_lido = memoria.operate() #Registrador de dados da memória (utilizado em SW e LW) TESTAR!!
+    if memoria.endereco is not None:
+        reg_dados.dado_lido = memoria.operate() #Registrador de dados da memória (utilizado em SW e LW) TESTAR!!
     
     #Apenas para fins de DEBUG
     print('Instrucao: '+str(registrador_instrucao.instr))
@@ -150,14 +122,15 @@ def process():
     banco_registradores.write_data = mux_reg_dado[bloco_controle['MemParaReg']] #Dado de escrita
     banco_registradores.reg_write = bloco_controle['EscReg'] #Sinal de controle do bloco de registradores
 
-    #Pegando a saida B do banco de registradores e passando para Dado a ser escrito na memória (É DONT CARE, PQ DEPENDE DO SINAL DE CONTROLE)
-    memoria.dado_escrever = banco_registradores.read_register2
 
     extended_bits = extend_my_bits(registrador_instrucao.binary_instr[16:]) #Extende um binário para 32bits
     shif_my_bits = f'{shift_l_my_bits(extended_bits):032b}' #Recebe um binário(string), transforma para inteiro, faz o shift para esquerda de 2 bits e vira binario novamente
 
     #Pegando a saida do banco de registradores
     saida_reg_1, saida_reg_2 = banco_registradores.operate()
+
+    #Pegando a saida B do banco de registradores e passando para Dado a ser escrito na memória (É DONT CARE, PQ DEPENDE DO SINAL DE CONTROLE)
+    memoria.dado_escrever = saida_reg_2
 
     mux_ula1 = {
         #MUX para saber da onde virá o primeiro operador da ula
@@ -220,7 +193,8 @@ def process():
     }
 
     # Atualizando o bloco de SAIDA_ULA(Armazenamento da função ATUAL para ser usado na PRÓXIMA FUNCAO)
-    saida_ula.saida = saida_ula_atual
+    if saida_ula_atual is not None:
+        saida_ula.saida = saida_ula_atual
 
     # Sinais de controle de PC (PARA FAZER O AND E OR)
     pece.pcEsCond = bloco_controle['PCEscCond']
@@ -230,10 +204,6 @@ def process():
         # Atualizando o valor de PC - NÃO TESTEI DESVIOS CONDICIONAIS E INCONDICIONAIS
         pece.operate(mux_saida_ula[bloco_controle['FontePC']])
 
-
-
-
-    #falta colocar o registrador de dados da memória
 
 
 #reg
@@ -248,18 +218,9 @@ def atualiza_reg():
     #input box Table
     for row in range(8):
         for column in range(4):
-            """
-            if row==0:
-                label = Entry(tab1, text="Heading : " + str(column))
-                label.config(font=('Arial',14))
-                label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                tab1.grid_columnconfigure(column, weight=1)
-            else:
-                #label=Entry(tab1,text="Row : "+str(row)+" , Column : "+str(column))
-                #label.grid(row=row,column=column,sticky="nsew",padx=1,pady=1)
-                #tab1.grid_columnconfigure(column,weight=1)"""
             str_reg = "$" + str(reg)
-            label=Label(tab0,text= str_reg + "= " + str(banco_registradores.registers[reg]),bg="black",fg="white",padx=3,pady=3)
+            reg_content = banco_registradores.registers[reg]
+            label=Label(tab0,text= str_reg + "= " + str(reg_content),bg="black",fg="white",padx=3,pady=3)
             label.grid(row=row,column=column,sticky="nsew",padx=1,pady=1)
             tab0.grid_columnconfigure(column,weight=1)
             reg += 1
@@ -327,11 +288,11 @@ def atualiza_sinais():
                 break
             
             dictio = sinais_grid.hand
-            output = dictio[aux[sig]]
-            if output == None:
-                output = str(output)
-            else:
-                output = bin(output)
+            output = str(dictio[aux[sig]])
+            # if output == None:
+            #     output = str(output)
+            # else:
+            #     output = bin(output)
             label=Label(tab3,text= str(aux[sig]) + " = " + output,bg="black",fg="white",padx=3,pady=3)
             label.grid(row=row,column=column,sticky="nsew",padx=1,pady=1)
             tab3.grid_columnconfigure(column,weight=1)
@@ -354,12 +315,14 @@ def keypress (event):
         # Lugar onde escreve comandos do processador
             # processador .process
             # processador .informaçoes
-        process()
-        atualiza_sinais()
-        atualiza_data()
-        atualiza_memoria()
-        atualiza_reg()
-
+            try:
+                process()
+                atualiza_sinais()
+                atualiza_data()
+                atualiza_memoria()
+                atualiza_reg()
+            except Exception as e:
+                print("Não há mais instruções na memória!")
         # Passar os dados corretos p/ as funçoes:
         
     # Descomente para saber qual tecla foi pressionada

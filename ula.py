@@ -19,6 +19,8 @@ class ULA():
             Used for: or
         '''
         # if 'ori' in self.instr and '0x1001' in self.op_1:
+        if 'ori' in self.instr and self.op_1 == 40:
+            self.op_2 = self.op_2//4
             
         return self.op_1 | self.op_2
 
@@ -27,7 +29,7 @@ class ULA():
             Used for: add, lw and sw
         '''
         if 'lui' in self.instr and '0x00001001' in self.instr:
-            self.op_2  = self.op_2 << 16
+            self.op_2  = 40
         return self.op_1 + self.op_2
 
     def __subtract_operation(self):
