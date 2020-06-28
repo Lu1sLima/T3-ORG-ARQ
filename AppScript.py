@@ -26,6 +26,12 @@ tablayout=Notebook(frame2)
 s = {"PCEscCond": None, "PCEsc":0b1,  "IouD":0b0, "LerMemoria":0b1, "EscMem":None,"MemParaReg":None, "IREsc":0b1, 
             "FontePC":0b00, "ULAOp": 0b00, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":None, "RegDst":None}
 
+
+# Valores Dados Internos
+ds = {"operation":"", "dadoA":"", "dadoB":"", "regLido1":"", "regLido2":"",
+    "regEsc":"", "dadoEsc":"", "regDadoMem":"", "ulaD1":"", "ulaD2":"",
+    "atual":""}
+
 # Funçoes que alteram dados
 def altera_registradores(dic_reg):
     r = dic_reg
@@ -304,6 +310,36 @@ def atualiza_sinais():
     tablayout.pack(fill="both")
         
 atualiza_sinais()
+
+
+#dados internos
+tab4=Frame(tablayout)
+tab4.pack(fill="both")
+
+def atualiza_dados_internos():
+    sig = 0
+    aux = list(ds.keys())
+    
+    #input box Table
+    for row in range(6):
+        for column in range(2):
+            if sig >= len(aux):
+                break
+            
+            output = str(ds[aux[sig]])
+            # if output == None:
+            #     output = str(output)
+            # else:
+            #     output = bin(output)
+            label=Label(tab4,text= str(aux[sig]) + " : " + output,bg="black",fg="white",padx=3,pady=3)
+            label.grid(row=row,column=column,sticky="nsew",padx=1,pady=1)
+            tab4.grid_columnconfigure(column,weight=1)
+            sig += 1
+                
+    tablayout.add(tab4,text="Dados Internos")
+    tablayout.pack(fill="both")
+        
+atualiza_dados_internos()
 
 
 frame = Frame(window, width=600, height=400)
