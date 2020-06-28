@@ -14,8 +14,8 @@
 - :white_check_mark: **lui**
 - :white_check_mark: **ori**
 - :white_check_mark: **xor**
-- :x: **beq**
-- :x: **bne**
+- :white_check_mark: **beq**
+- :white_check_mark: **bne**
 - :white_check_mark: **srl**
 - :white_check_mark: **sll**
 - :x:  **slt**
