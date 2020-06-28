@@ -66,7 +66,7 @@ def process():
 
     ##################### Apensar para fins d debug #####################
 
-    if 'sw' in registrador_instrucao.instr:
+    if 'sll' in registrador_instrucao.instr:
         controle.estado_atual
     print(f'PC {pc}')
     print(f'Estado atual {controle.estado_atual}')
@@ -143,7 +143,8 @@ def process():
         0:int(hex(saida_reg_2), 16), #Vem do dado lido do registrador a ser lido #2
         1:1, #Para pc++
         2:int(extended_bits, 2), #Transforma o binário de 32 bits em inteiro
-        3:int(shif_my_bits, 2) #Transforma o binário que foi shiftado 2 bits para esquerda em inteiro
+        3:int(shif_my_bits, 2), #Transforma o binário que foi shiftado 2 bits para esquerda em inteiro
+        4:int(registrador_instrucao.binary_instr[21:26], 2) #Coloquei para acomodar instrucoes do tipo SHIFT, dai passo apenas o SHAMT para o ULAFonteB
     }
 
 

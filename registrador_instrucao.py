@@ -54,9 +54,10 @@ class RegistradorInstrucao():
                 # sll rd, rt, shamt
                 rs = f'{0:05b}' #rs é ZERO
                 rt = f'{int(instruction[2]):05b}'
-                shamt = f'{int(instruction[3]):05b}'
+                shamt = f'{int(instruction[3], 16):05b}'
                 funct = f'{int(r_type[opcode]):06b}'
-                self.binary_instr = bin_opcode+rs+rt+rd+shamt+funct
+                self.binary_instr = bin_opcode+rt+rs+rd+shamt+funct
+                return
 
             rs = f'{int(instruction[2]):05b}'
             rt = f'{int(instruction[3]):05b}'

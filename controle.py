@@ -27,7 +27,7 @@ class Controle():
     def saida0(self):
         saida = {
             "PCEscCond": None, "PCEsc":0b1,  "IouD":0b0, "LerMemoria":0b1, "EscMem":None,"MemParaReg":0, "IREsc":0b1, 
-            "FontePC":0b00, "ULAOp": 0b000, "ULAFonteB":0b01,  "ULAFonteA":0b0, "EscReg":0b00, "RegDst":0
+            "FontePC":0b00, "ULAOp": 0b000, "ULAFonteB":0b001,  "ULAFonteA":0b0, "EscReg":0b00, "RegDst":0
         }
         self.estado_atual = 1
         return saida
@@ -35,7 +35,7 @@ class Controle():
     def saida1(self):
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":None, "ULAOp": 0b000, "ULAFonteB":0b11, "ULAFonteA":0b0, "EscReg":0b00, "RegDst":0
+            "FontePC":None, "ULAOp": 0b000, "ULAFonteB":0b011, "ULAFonteA":0b0, "EscReg":0b00, "RegDst":0
             }
 
         if "lw" in self.comando[0] or "sw" in self.comando[0]:
@@ -59,7 +59,7 @@ class Controle():
     def saida2(self):
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":None, "ULAOp": 0b000, "ULAFonteB":0b10, "ULAFonteA":0b1, "EscReg":0b00, "RegDst":0b0
+            "FontePC":None, "ULAOp": 0b000, "ULAFonteB":0b010, "ULAFonteA":0b1, "EscReg":0b00, "RegDst":0b0
         }
         if "lw" in self.comando[0]:
             self.estado_atual = 3
@@ -74,7 +74,12 @@ class Controle():
             elif "andi" in self.comando[0]:
                 saida["ULAOp"] = 0b011
             elif "srl" in self.comando[0]:
+                saida['ULAFonteB'] = 0b100 #Acomodação para MUX 5x1
+                saida["ULAOp"] = 0b100
+            elif "sll" in self.comando[0]:
+                saida['ULAFonteB'] = 0b100 #Acomodação para MUX 5x1
                 saida["ULAOp"] = 0b010
+            
             
             # andi, lui ULAOp == sw/lw
 
@@ -111,7 +116,7 @@ class Controle():
         #execução
         saida = {
             "PCEscCond":None, "PCEsc":None, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":None, "ULAOp": 0b010, "ULAFonteB":0b00, "ULAFonteA":0b1, "EscReg":0b00, "RegDst":0
+            "FontePC":None, "ULAOp": 0b010, "ULAFonteB":0b000, "ULAFonteA":0b1, "EscReg":0b00, "RegDst":0
         }
         self.estado_atual = 7
         return saida
@@ -137,7 +142,7 @@ class Controle():
         #Termino do desvio condicional
         saida = {
             "PCEscCond":0b1, "PCEsc":0, "IouD":None, "LerMemoria":None, "EscMem":None, "MemParaReg":0, "IREsc":None,
-            "FontePC":0b01, "ULAOp": 0b001, "ULAFonteB":0b00, "ULAFonteA":0b1, "EscReg":0b00, "RegDst":0
+            "FontePC":0b01, "ULAOp": 0b001, "ULAFonteB":0b000, "ULAFonteA":0b1, "EscReg":0b00, "RegDst":0
         }
         self.estado_atual = 0
         return saida
@@ -150,29 +155,3 @@ class Controle():
         }
         self.estado_atual = 0
         return saida
-
-### Testa
-# def p1():
-#     return 2
-
-# dict = {
-#     1: p1
-# }
-
-# print(a.saida())
-# print(a.saida())
-###
-
-# dic_resp = {0:1, 1:1}
-
-# dic_entrada = {0:None, 1:None, 2:None, 3:None, 4:None, 5:None, 6:None, 7:None, 8:None, 9:None}
-
-
-# for i in dic_entrada.keys():
-
-# 	if i in dic_resp.keys():
-# 		dic_entrada[i] = dic_resp[i]
-# 	else:
-# 		dic_entrada[i] = None
-
-# print(dic_entrada)
