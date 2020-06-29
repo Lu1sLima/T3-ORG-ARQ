@@ -37,7 +37,7 @@
     - 1.5 - Os arquivos de entrada devem ser preferívelmente do tipo .asm.
     - 1.6 - O arquivo de teste DEVE ESTAR na pasta files e tem que se chamar teste.asm, caso queira chamar outro arquivo deverá mudar na função store_in_memory
     dentro do arquivo AppScript.py.
-    - 1.7 - Como o código vem do basic, então é não pode colocar label (a não ser o main).
+    - 1.7 - Como o código vem do basic, então não pode colocar label (a não ser o main).
 - 2 - Os registradores DEVEM ser do tipo $ NÚMERO DO REGISTRADOR ($3, $5)
 - 3 - Execução:
     - 3.1 - Para executar, é necessário rodar o comando (o arquivo AppScript.py).
