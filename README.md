@@ -45,7 +45,7 @@ main:
     sll $16, $16, 0x00000002 # Shiftando 2 para à esquerda no dado que está no $16 (11 << 2), resultado deve ser 44 e será guardado em $16
     lui $17, 0x0000000C # Colocando C(12) no registrador $17
     srl $17, $17, 0x00000002 # Shiftando 2 para à direita no dado que está no $17 (12 >> 2), resultado deve ser 3 e será guardado em $17
-    beq $0, $0, 0xffffffed # Volta para a label main, sim, ficará em loop infinito se for ficar dando enter, mas é apenas para ilustrar
+    beq $0, $10, 0xffffffed # No momento nao acontece nada, pois a comparação vai ser FALSA e nao vai saltar, se tu colocar uma comparação verdadeira beq $0, $0, 0xffffffed por exemplo, ele vai saltar para o MAIN (pc = 0), primeira intrução.
     slt $18, $0, $10 #testa se o dado que está em $0(Que é zero) é menor do que está em $10 (que é 45), se sim, coloca 1 em $18
 .data
     A: .word	30
