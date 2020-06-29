@@ -23,8 +23,6 @@
 
 ## INSTRUÇÕES PARA USO
 
-Instruções para uso:
-
 - 1 - Arquivo de entrada:
     - 1.1 - O Arquivo de entrada DEVE seguir o padrão do arquivo teste.asm.
     - 1.2 - O Arquivo de entrada DEVE ter as 3 primeiras linhas no seguinte sentido:
