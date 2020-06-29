@@ -30,7 +30,7 @@
          .text
          .globl main
          main:
-         AQUI SE INICIA AS INSTRUÇÕES
+         #AQUI SE INICIA AS INSTRUÇÕES
         ```
     - 1.3 - As instruções DEVEM começar APÓS o main, ou seja, é necessário que comecem na próxima linha depois da label main.
     - 1.4 - As instruções DEVEM ser do basic.
