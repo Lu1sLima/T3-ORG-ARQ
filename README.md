@@ -26,10 +26,10 @@
 - 1 - Arquivo de entrada:
     - 1.1 - O Arquivo de entrada DEVE seguir o padrão do arquivo teste.asm.
     - 1.2 - O Arquivo de entrada DEVE ter as 3 primeiras linhas no seguinte sentido:
-            .text
-            .globl main
-            main:
-            AQUI SE INICIA AS INSTRUÇÕES
+            - .text
+            - .globl main
+            - main:
+            - AQUI SE INICIA AS INSTRUÇÕES
     - 1.3 - As instruções DEVEM começar APÓS o main, ou seja, é necessário que comecem na próxima linha depois da label main.
     - 1.4 - As instruções DEVEM ser do basic.
     - 1.5 - Os arquivos de entrada devem ser preferívelmente do tipo .asm.
