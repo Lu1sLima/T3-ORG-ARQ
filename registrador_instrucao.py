@@ -15,6 +15,7 @@ class RegistradorInstrucao():
             self.decodify_bin()
         
     def decodify_bin(self):
+        #Se a instrução que vier for 0, então quer dizer que não há mais instruções na memoria
         if self.instr == 0:
             raise ReferenceError("Não há mais instruções na memória!")
         instruction = re.split('\W+', self.instr)
